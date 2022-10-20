@@ -1,0 +1,11 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-11",
+            "path": "C:\\Program Files\\OpenJDK\\jdk-11.0.2"
+        }
+    ],
+    "terminal.integrated.enableFileLinks": true,
+    "java.debug.settings.console": "integratedTerminal"
+}
