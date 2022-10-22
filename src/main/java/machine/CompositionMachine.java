@@ -1,105 +1,87 @@
 package machine;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  * @author Damian Arellanes
- * {@link https://github.com/damianarellanes/compositionmachine}
+ *         {@link https://github.com/damianarellanes/compositionmachine}
  */
 public class CompositionMachine {
-    
-    private final RuleSet rules;    
+
+    private final BaseRuleSet<BaseConnectedQuiver> rules;
     private final Map<Integer, Quiver> quiverHistory;
-    
-    public CompositionMachine(Quiver q, RuleSet rules) {      
-      this.rules = rules;      
-      this.quiverHistory = new HashMap();
-      quiverHistory.put(0, q);
-    }
-    
-    public void execute(int untilTime) {
-      
-      System.out.println(quiverHistory.get(0) + "  t=0");
-      
-      for(int i = 1; i <= untilTime; i++) {
-        
-        Quiver nextQuiver = nextGlobalState(quiverHistory.get(i-1));
-        System.out.println(nextQuiver + "  t=" + i);
-        quiverHistory.put(i, nextQuiver);
-        
-        if(halts(nextQuiver,quiverHistory.get(i-1))) {
-          System.out.println(quiverHistory.get(i-1));
-          System.out.println(nextQuiver);
-          System.out.println("HALTS AT TIME " + i + "!");
-          System.exit(0);
-        }
-      }
-    }
-    
-    public boolean halts(Quiver q) {
-      
-      int compositeCounter = 0;
-      int bitCounterCounter = 0;
-      
-      for(ConnectedQuiver cq : q) {
-        
-        if(cq.get(0) == 1) bitCounterCounter++;
-        
-        for(int i = 1; i < cq.size(); i++) {
-          
-          if(cq.get(i) == 1) bitCounterCounter++;
-          
-          if(cq.get(i-1) == 1 && cq.get(i) == 1) {            
-            compositeCounter ++;            
-            if(compositeCounter > 1) return false;
-          }
-        }
-      }
-      
-      return bitCounterCounter == 2 && compositeCounter==1;
-    }
-    
-    public boolean halts(Quiver current, Quiver previous) {
-      //return current.equals(previous);
-      return current.equals(quiverHistory.get(0));
+    private final Quiver currentQuiver;
+
+    public CompositionMachine(Quiver q, BaseRuleSet<BaseConnectedQuiver> rules) {
+        this.rules = rules;
+        this.quiverHistory = new HashMap<>();
+        this.currentQuiver = q;
     }
 
-    private Quiver nextGlobalState(Quiver currentQuiver) {
-      
-      Quiver newQuiver = new Quiver();
-      
-      for(ConnectedQuiver cq : currentQuiver) {
+    public void execute(int untilTime) {
+
         
-        ConnectedQuiver ncq = new ConnectedQuiver();
-        
-        for(int i = 0; i < cq.size(); i++) {
-         
-          if(isInN1(cq)) ncq.add(rules.delta1(cq.get(i)));
-          else if(isInN2(i, cq)) ncq.add(rules.delta2(cq.get(i), cq.get(i+1)));
-          else if(isInN3(i, cq)) ncq.add(rules.delta3(cq.get(i-1), cq.get(i)));
-          else if(isInN4(i, cq)) ncq.add(rules.delta4(cq.get(i-1), cq.get(i), cq.get(i+1)));
+        for (int i = 0; i < untilTime; i++) {
+            
+            Quiver quiverSnapshot = updateGlobalState(this.currentQuiver);
+            System.out.println(quiverSnapshot + "  t=" + i);
+            this.quiverHistory.put(i, quiverSnapshot);
+            
+            if (halts(this.currentQuiver, quiverSnapshot)) {
+                System.out.println(quiverSnapshot);
+                System.out.println(this.currentQuiver);
+                System.out.println("HALTS AT TIME " + (i + 1) + "!");
+                System.exit(0);
+            }
         }
-        
-        newQuiver.add(ncq);
-      }
-      
-      return newQuiver;
+        System.out.println(currentQuiver + "  t=" + untilTime);
     }
-    
-    private boolean isInN1(ConnectedQuiver cq) {      
-      return cq.size() == 1;
+
+    public boolean halts(Quiver q) {
+        return false;
+
+        // what is this.
+
+        // int compositeCounter = 0;
+        // int bitCounterCounter = 0;
+
+        // for(ConnectedQuiver cq : q) {
+
+        // if(cq.get(0) == 1) bitCounterCounter++;
+
+        // for(int i = 1; i < cq.size(); i++) {
+
+        // if(cq.get(i) == 1) bitCounterCounter++;
+
+        // if(cq.get(i-1) == 1 && cq.get(i) == 1) {
+        // compositeCounter ++;
+        // if(compositeCounter > 1) return false;
+        // }
+        // }
+        // }
+
+        // return bitCounterCounter == 2 && compositeCounter==1;
     }
-    
-    private boolean isInN2(int index, ConnectedQuiver cq) { 
-      return cq.size() > 1 && index == 0;
+
+    public boolean halts(Quiver current, Quiver previous) {
+        // return current.equals(previous);
+        return current.equals(quiverHistory.get(0));
     }
-    
-    private boolean isInN3(int index, ConnectedQuiver cq) { 
-      return cq.size() > 1 && index == cq.size()-1;
-    }
-    
-    private boolean isInN4(int index, ConnectedQuiver cq) { 
-      return cq.size() > 1 && index != 0 && index != cq.size()-1;
+
+    // return value is snapshot of curentQuiver
+    private Quiver updateGlobalState(Quiver currentQuiver) {
+        Quiver newQuiver = currentQuiver.snapShot();
+
+        for (int i = 0; i < currentQuiver.size(); i++) {
+            Iterator<Arrow> arrowIterator = newQuiver.get(i).getArrowIterator();
+            while (arrowIterator.hasNext()) {
+                Arrow arrow = arrowIterator.next();
+                currentQuiver.get(i).updateArrowState(arrow, rules.apply(newQuiver.get(i), arrow));
+            }
+        }
+
+        return newQuiver;
     }
 }

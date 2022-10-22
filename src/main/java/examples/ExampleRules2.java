@@ -1,5 +1,7 @@
 package examples;
 
+import machine.Arrow;
+import machine.ConnectedQuiver;
 import machine.RuleSet;
 
 /**
@@ -9,6 +11,11 @@ import machine.RuleSet;
  */
 public class ExampleRules2 implements RuleSet {
 
+  @Override
+  public int apply(ConnectedQuiver connectedQuiver, Arrow arrow) {
+      return RuleSet.apply1Deg(this, connectedQuiver, arrow);
+  }
+  
   @Override
   public int delta1(int organism) {
     return organism;

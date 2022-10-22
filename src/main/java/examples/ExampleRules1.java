@@ -1,5 +1,7 @@
 package examples;
 
+import machine.Arrow;
+import machine.ConnectedQuiver;
 import machine.RuleSet;
 
 /**
@@ -8,6 +10,12 @@ import machine.RuleSet;
  * {@link https://github.com/damianarellanes/compositionmachine}
  */
 public class ExampleRules1 implements RuleSet {
+
+  
+  @Override
+  public int apply(ConnectedQuiver connectedQuiver, Arrow arrow) {
+      return RuleSet.apply1Deg(this, connectedQuiver, arrow);
+  }
 
   @Override
   public int delta1(int organism) {
