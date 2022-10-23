@@ -1,14 +1,17 @@
 package machine;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+
+import machine.internal.Arrow;
+import machine.internal.NotImplementedError;
 
 /**
  * @author Damian Arellanes
  *         {@link https://github.com/damianarellanes/compositionmachine}
  */
-public class ConnectedQuiver extends BaseConnectedQuiver /* extends ArrayList<Integer> */ {
+public class ConnectedQuiver extends BaseConnectedQuiver<ConnectedQuiver> /* extends ArrayList<Integer> */ {
 
     private ArrayList<Integer> arrowStateOverride = new ArrayList<>();
     private ArrayList<ArrayList<Arrow>> arrowCache = new ArrayList<>();
@@ -16,7 +19,7 @@ public class ConnectedQuiver extends BaseConnectedQuiver /* extends ArrayList<In
     public void addArrow(int state) {
         this.arrowStateOverride.add(state);
         ArrayList<Arrow> cache = new ArrayList<>();
-        cache.add(new Arrow(this.maxIndex, this.maxIndex + 1));
+        cache.add(Arrow.create(this.maxIndex, this.maxIndex + 1));
         this.arrowCache.add(cache);
         this.maxIndex++; // == arraylist.size()
     }
@@ -35,13 +38,38 @@ public class ConnectedQuiver extends BaseConnectedQuiver /* extends ArrayList<In
     }
 
     @Override
+    public int getArrowState(Arrow a) {
+        return this.arrowStateOverride.get(a.getSourceIndex());
+    }
+
+    @Override
+    public void updateArrowState(Arrow a, int state) {
+        this.arrowStateOverride.set(a.getSourceIndex(), state);
+    }
+
+    @Override
+    public HashMap<Arrow, Integer> getArrowStates() {
+        HashMap<Arrow, Integer> map = new HashMap<>();
+        for (int index = 0; index < this.arrowStateOverride.size(); index++) {
+            map.put(Arrow.create(index, index + 1), this.arrowStateOverride.get(index));
+        }
+        return map;
+    }
+
+    @Override
     public ArrayList<Arrow> getArrowsBySource(int sourceIndex) {
-        return this.arrowCache.get(sourceIndex);
+        if (sourceIndex >= 0 && sourceIndex < this.maxIndex)
+            return this.arrowCache.get(sourceIndex);
+        else
+            return null;
     }
 
     @Override
     public ArrayList<Arrow> getArrowsByTarget(int targetIndex) {
-        return this.arrowCache.get(targetIndex - 1);
+        if (targetIndex > 0 && targetIndex <= this.maxIndex)
+            return this.arrowCache.get(targetIndex - 1);
+        else
+            return null;
     }
 
     @Override
@@ -57,7 +85,7 @@ public class ConnectedQuiver extends BaseConnectedQuiver /* extends ArrayList<In
             public Arrow next() {
                 ArrayList<Arrow> nextCache = cacheIterator.next();
                 if (nextCache != null)
-                    return cacheIterator.next().get(0);
+                    return nextCache.get(0);
                 else
                     return null;
             }
@@ -87,5 +115,13 @@ public class ConnectedQuiver extends BaseConnectedQuiver /* extends ArrayList<In
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Object clone() {
+        ConnectedQuiver newObj = (ConnectedQuiver) super.clone();
+        newObj.arrowStateOverride = (ArrayList<Integer>) this.arrowStateOverride.clone();
+        newObj.arrowCache = this.arrowCache;
+        return newObj;
     }
 }

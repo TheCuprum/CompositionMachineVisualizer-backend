@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-public abstract class BaseConnectedQuiver {
+import machine.internal.Arrow;
+
+public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> implements Cloneable{
     protected HashMap<Arrow, Integer> arrowState = new HashMap<>();
     private HashMap<Integer, ArrayList<Arrow>> cachedArrowBySource = new HashMap<>();
     private HashMap<Integer, ArrayList<Arrow>> cachedArrowByTarget = new HashMap<>();
@@ -57,6 +59,10 @@ public abstract class BaseConnectedQuiver {
         return this.arrowState.get(a);
     }
 
+    public HashMap<Arrow, Integer> getArrowStates() {
+        return this.arrowState;
+    }
+
     public void updateArrowState(Arrow a, int state) {
         this.arrowState.put(a, state);
     }
@@ -73,28 +79,33 @@ public abstract class BaseConnectedQuiver {
         return this.arrowState.keySet().iterator();
     }
 
-    public BaseConnectedQuiver snapshot() {
-        BaseConnectedQuiver newObj = (BaseConnectedQuiver) this.clone();
-        HashMap<Arrow, Integer> clonedArrowState = new HashMap<>();
-        for (Entry<Arrow, Integer> pair : this.arrowState.entrySet()) {
-            clonedArrowState.put(pair.getKey(), pair.getValue().intValue());
-        }
-        newObj.arrowState = clonedArrowState;
-        newObj.maxIndex = this.maxIndex;
+    public Sub typedClone() {
+        Sub newObj = (Sub) this.clone();
         return newObj;
     }
 
     @Override
     public Object clone() {
-        BaseConnectedQuiver newObj = this.snapshot();
-        newObj.refreshCache();
-        return newObj;
+        Sub newObj;
+        try {
+            newObj = (Sub)super.clone();
+            HashMap<Arrow, Integer> clonedArrowState = new HashMap<>();
+            for (Entry<Arrow, Integer> pair : this.arrowState.entrySet()) {
+                clonedArrowState.put(pair.getKey(), pair.getValue().intValue());
+            }
+            newObj.arrowState = clonedArrowState;
+            newObj.maxIndex = this.maxIndex;
+            return newObj;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BaseConnectedQuiver) {
-            BaseConnectedQuiver bcq = (BaseConnectedQuiver) obj;
+            BaseConnectedQuiver<?> bcq = (BaseConnectedQuiver<?>) obj;
             return this.arrowState.equals(bcq.arrowState);
         } else {
             return false;
