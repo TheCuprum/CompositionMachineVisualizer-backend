@@ -1,13 +1,15 @@
 package machine.internal;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import machine.BaseConnectedQuiver;
 import machine.BaseRuleSet;
 import machine.Quiver;
 import machine.QuiverInitializer;
+import machine.callbacks.MachineCallback;
 
 /**
  * @author Damian Arellanes
@@ -16,8 +18,9 @@ import machine.QuiverInitializer;
 public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
 
     private final BaseRuleSet<CQ> rules;
-    private final Map<Integer, Quiver<CQ>> quiverHistory;
-    private final Quiver<CQ> currentQuiver;
+    private final LinkedHashMap<Integer, Quiver<CQ>> quiverHistory;
+    // private final Quiver<CQ> currentQuiver;
+    private final ArrayList<MachineCallback> callbacks;
 
     public static <Q extends BaseConnectedQuiver<Q>> CompositionMachine<Q> createMachine(QuiverInitializer<Q> qInit, BaseRuleSet<Q> rules){
         return createMachine(qInit.generateQuiver(), rules);
@@ -29,29 +32,43 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
 
     public CompositionMachine(Quiver<CQ> cq, BaseRuleSet<CQ> rules) {
         this.rules = rules;
-        this.quiverHistory = new HashMap<>();
-        this.currentQuiver = cq;
+        this.quiverHistory = new LinkedHashMap<>();
+        this.quiverHistory.put(0, cq);
+        // this.currentQuiver = cq;
+        this.callbacks = new ArrayList<>();
     }
 
     public Map<Integer, Quiver<CQ>> getQuiverHistory(){
         return this.quiverHistory;
     }
 
+    public void addCallback(MachineCallback callback){
+        if (callback != null)
+            this.callbacks.add(callback);
+    }
+
     public void execute(int untilTime) {      
-        for (int i = 0; i < untilTime; i++) {           
-            Quiver<CQ> quiverSnapshot = updateGlobalState(this.currentQuiver);
-            System.out.println(quiverSnapshot + "  t=" + i);
-            this.quiverHistory.put(i, quiverSnapshot);
+        for (MachineCallback cb : this.callbacks) 
+                cb.onExecuteStart(untilTime, this.quiverHistory.get(0));
+
+        for (int i = 1; i <= untilTime; i++) {
+            for (MachineCallback cb : this.callbacks) 
+                cb.onStepBegin(i, this.quiverHistory);
+
+            Quiver<CQ> oldQuiver = this.quiverHistory.get(i - 1);        
+            Quiver<CQ> newQuiver = updateGlobalState(oldQuiver);
+            this.quiverHistory.put(i, newQuiver);
             
-            if (halts(this.currentQuiver, quiverSnapshot)) {
-                System.out.println(quiverSnapshot);
-                System.out.println(this.currentQuiver);
-                System.out.println("HALTS AT TIME " + (i + 1) + "!");
+            if (halts(this.quiverHistory.get(0), newQuiver)) {
+                System.out.println(newQuiver);
+                System.out.println(this.quiverHistory.get(0));
+                System.out.println("HALTS AT TIME " + i + "!");
                 System.exit(0);
             }
+            
+            for (MachineCallback cb : this.callbacks) 
+                cb.onStepEnd(i, this.quiverHistory.get(i), this.quiverHistory);
         }
-        System.out.println(currentQuiver + "  t=" + untilTime);
-        this.quiverHistory.put(untilTime, currentQuiver);
     }
 
     public boolean halts(Quiver<?> q) {
@@ -86,22 +103,22 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
         // return current.equals(quiverHistory.get(0));
     }
 
-    // return value is snapshot of curentQuiver
+    // return value is next state
     private Quiver<CQ> updateGlobalState(Quiver<CQ> currentQuiver) {
-        Quiver<CQ> oldQuiver = currentQuiver.snapShot();
+        Quiver<CQ> newQuiver = currentQuiver.snapShot();
 
         for (int i = 0; i < currentQuiver.size(); i++) {
-            Iterator<Arrow> arrowIterator = oldQuiver.get(i).getArrowIterator();
+            Iterator<Arrow> arrowIterator = currentQuiver.get(i).getArrowIterator();
             while (arrowIterator.hasNext()) {
                 Arrow arrow = arrowIterator.next();
-                Integer state = this.rules.apply(oldQuiver.get(i), arrow);
-                currentQuiver.get(i).updateArrowState(arrow, state);
+                Integer state = this.rules.apply(currentQuiver.get(i), arrow);
+                newQuiver.get(i).updateArrowState(arrow, state);
                 // System.out.print(state);
             }
             // System.out.print("  ");
         }
         // System.out.println(currentQuiver);
 
-        return oldQuiver;
+        return newQuiver;
     }
 }

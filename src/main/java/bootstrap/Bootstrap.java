@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import machine.BaseRuleSet;
 import machine.QuiverInitializer;
+import machine.callbacks.MachineCallback;
 import machine.internal.CompositionMachine;
 import util.FileUtil;
 
@@ -23,7 +24,8 @@ public class Bootstrap {
                 return false;
         }
     };
-    private static final Class<?>[] PARAMETER_TYPES = {QuiverInitializer.class, BaseRuleSet.class};
+    private static final Class<?>[] CM_PARAMETER_TYPES = {QuiverInitializer.class, BaseRuleSet.class};
+    private static final Class<?>[] CALLBACK_PARAMETER_TYPES = {Config.class};
 
     private URLClassLoader customClassLoader;
     private Config bootConfig = null;
@@ -82,15 +84,33 @@ public class Bootstrap {
     public CompositionMachine<?> creatCompositionMachine() {
         Class<?> initializerClass = this.loadClass(this.bootConfig.initializerName, QuiverInitializer.class);
         Class<?> ruleClass = this.loadClass(this.bootConfig.ruleName, BaseRuleSet.class);
+        ArrayList<Class<?>> callbackClassList = new ArrayList<>();
+        for (String callbackName : this.bootConfig.callbackNames) {
+            Class<?> callbackClass = this.loadClass(callbackName, MachineCallback.class);
+            if (callbackClass != null)
+                callbackClassList.add(callbackClass);
+        }
+
         try {
             Object initializerObject = 
                 initializerClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
             Object ruleObject = 
                 ruleClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
 
+            Object[] callbackObjectList = new Object[callbackClassList.size()];
+            for (int i = 0; i < callbackObjectList.length; i++) {
+                callbackObjectList[i] = callbackClassList.get(i).getConstructor(new Class<?>[0]).newInstance(new Object[0]);
+                callbackClassList.get(i).getMethod("initialize", CALLBACK_PARAMETER_TYPES).invoke(callbackObjectList[i], this.bootConfig);
+            }
+
             Object[] args = {initializerObject, ruleObject};
-            return (CompositionMachine<?>) CompositionMachine.class.getMethod("createMachine", PARAMETER_TYPES).invoke(null, args);
+            CompositionMachine<?> machine = (CompositionMachine<?>) CompositionMachine.class.getMethod("createMachine", CM_PARAMETER_TYPES).invoke(null, args);
+            for (Object callbackObject : callbackObjectList) {
+                machine.addCallback((MachineCallback)callbackObject);
+            }
+            return machine;
             // return CompositionMachine.createMachine(initializerObject, ruleObject);
+
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -102,5 +122,4 @@ public class Bootstrap {
         machine.execute(this.bootConfig.iterationSteps);
         return machine;
     }
-
 }

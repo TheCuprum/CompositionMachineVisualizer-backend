@@ -1,8 +1,9 @@
 package machine;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import machine.internal.Arrow;
 import machine.internal.NotImplementedError;
@@ -48,8 +49,8 @@ public class ConnectedQuiver extends BaseConnectedQuiver<ConnectedQuiver> /* ext
     }
 
     @Override
-    public HashMap<Arrow, Integer> getArrowStates() {
-        HashMap<Arrow, Integer> map = new HashMap<>();
+    public Map<Arrow, Integer> getArrowStates() {
+        LinkedHashMap<Arrow, Integer> map = new LinkedHashMap<>();
         for (int index = 0; index < this.arrowStateOverride.size(); index++) {
             map.put(Arrow.create(index, index + 1), this.arrowStateOverride.get(index));
         }
@@ -94,7 +95,6 @@ public class ConnectedQuiver extends BaseConnectedQuiver<ConnectedQuiver> /* ext
 
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
         Iterator<Integer> i = this.arrowStateOverride.iterator();
         while (i.hasNext()) {

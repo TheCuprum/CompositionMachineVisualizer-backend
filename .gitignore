@@ -1,3 +1,7 @@
 ref/
 target/
 .vscode/
+
+src/main/java/temp
+
+**/*.dot

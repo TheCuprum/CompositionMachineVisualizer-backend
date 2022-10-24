@@ -1,17 +1,18 @@
 package machine;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
 import machine.internal.Arrow;
 
 public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> implements Cloneable{
-    protected HashMap<Arrow, Integer> arrowState = new HashMap<>();
-    private HashMap<Integer, ArrayList<Arrow>> cachedArrowBySource = new HashMap<>();
-    private HashMap<Integer, ArrayList<Arrow>> cachedArrowByTarget = new HashMap<>();
+    protected LinkedHashMap<Arrow, Integer> arrowState = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, ArrayList<Arrow>> cachedArrowBySource = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, ArrayList<Arrow>> cachedArrowByTarget = new LinkedHashMap<>();
 
     protected int maxIndex = 0;
 
@@ -22,7 +23,7 @@ public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> 
         this.cacheArrow(a, this.cachedArrowByTarget, (arrow) -> arrow.getTargetIndex());
     }
 
-    private void cacheArrow(Arrow a, HashMap<Integer, ArrayList<Arrow>> targetCache,
+    private void cacheArrow(Arrow a, LinkedHashMap<Integer, ArrayList<Arrow>> targetCache,
             Function<Arrow, Integer> getterFunction) {
         int value = getterFunction.apply(a);
         ArrayList<Arrow> cachedArray = targetCache.get(value);
@@ -59,7 +60,7 @@ public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> 
         return this.arrowState.get(a);
     }
 
-    public HashMap<Arrow, Integer> getArrowStates() {
+    public Map<Arrow, Integer> getArrowStates() {
         return this.arrowState;
     }
 
@@ -89,7 +90,7 @@ public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> 
         Sub newObj;
         try {
             newObj = (Sub)super.clone();
-            HashMap<Arrow, Integer> clonedArrowState = new HashMap<>();
+            LinkedHashMap<Arrow, Integer> clonedArrowState = new LinkedHashMap<>();
             for (Entry<Arrow, Integer> pair : this.arrowState.entrySet()) {
                 clonedArrowState.put(pair.getKey(), pair.getValue().intValue());
             }
