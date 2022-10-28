@@ -49,11 +49,11 @@ public class Bootstrap {
      * @param customClassPath Customized directory to load external classes from.
      * @return All found jars in specified path.
      */
-    private static URI[] sacnForJar(String customClassPath) {
+    private static ArrayList<URI> sacnForJar(String customClassPath) {
+        ArrayList<URI> uris = new ArrayList<>();
         File customFile = new File(customClassPath);
         if (customFile.isFile()) {
-            URI[] uris = new URI[1];
-            uris[0] = customFile.toURI();
+            uris.add(customFile.toURI());
             return uris;
         } else {
             File[] filtedFiles = customFile.listFiles(JAR_FILENAME_FILTER);
@@ -62,8 +62,7 @@ public class Bootstrap {
             for (File file : filtedFiles) {
                 uriList.add(file.toURI());
             }
-            URI[] u = new URI[uriList.size()];
-            return uriList.toArray(u);
+            return uriList;
         }
     }
 

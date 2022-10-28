@@ -106,8 +106,8 @@ public class Main {
         
         // String[] callbackNames = new String[2];
         // // callbackNames[0] = "machine.callbacks.PrintBlockCallback";
-        // callbackNames[0] = "machine.callbacks.SaveDotCallback";
-        // callbackNames[1] = "machine.callbacks.PrintBlockCallback";
+        // callbackNames[0] = "compositionmachine.machine.callbacks.SaveDotCallback";
+        // callbackNames[1] = "compositionmachine.machine.callbacks.PrintBlockCallback";
         // Config config = new Config();
         // config.customClassPath = "./";
         // config.initializerName = "examples.ExampleQuiverInitializer";

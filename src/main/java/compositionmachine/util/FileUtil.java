@@ -5,11 +5,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class FileUtil {
     private static int RETRIES = 1000;
 
-    public static URL[] uri2url(URI[] uris) {
+    public static URL[] uri2url(Collection<URI> uris) {
         ArrayList<URL> urlList = new ArrayList<>();
         for (URI uri : uris) {
             try {
