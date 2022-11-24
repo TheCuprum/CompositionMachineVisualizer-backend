@@ -22,25 +22,29 @@ public class Main {
         Options opt = new Options();
 
         opt.addOption("help", "This is a help");
-        opt.addOption(Option.builder("Q").longOpt("quiver-name").argName("quiver initializer").required().hasArg()
-                .type(String.class)
-                .desc("Quiver initializer class name").build());
-        opt.addOption(
-                Option.builder("R").longOpt("rule-name").argName("rule set").required().hasArg().type(String.class)
-                        .desc("Rule set class name").build());
-        opt.addOption(Option.builder("cp").longOpt("custom-classpath").argName("folder").hasArg().type(String.class)
-                .desc("Custom path to load classes from").build());
-        opt.addOption(
-                Option.builder("t").longOpt("step-time").argName("step").hasArg().type(Integer.class)
-                        .desc("CM step time").build());
-        opt.addOption(
-                Option.builder("cb").longOpt("callbacks").argName("callback.A,callback.B").hasArg().type(String.class)
-                        .desc("Callbacks during execution").build());
-        opt.addOption(Option.builder("o").longOpt("dot-output").argName("folder").hasArg().type(String.class)
-                .desc("DOT file output directory").build());
-        opt.addOption(
-                Option.builder("n").longOpt("machine-name").argName("name").hasArg().type(String.class)
-                        .desc("Machine name").build());
+        opt.addOption(Option.builder("Q").longOpt("quiver-name").argName("quiver initializer").type(String.class)
+                .required().hasArg().desc("Quiver initializer class name").build());
+
+        opt.addOption(Option.builder("R").longOpt("rule-name").argName("rule set").type(String.class)
+                .required().hasArg().desc("Rule set class name").build());
+
+        opt.addOption(Option.builder("H").longOpt("halt-predicate").argName("halt predicate").type(String.class)
+                .hasArg().desc("Halt predicate class name").build());
+
+        opt.addOption(Option.builder("cp").longOpt("custom-classpath").argName("folder").type(String.class)
+                .hasArg().desc("Custom path to load classes from").build());
+
+        opt.addOption(Option.builder("t").longOpt("step-time").argName("step").type(Integer.class)
+                .hasArg().desc("CM step time").build());
+
+        opt.addOption(Option.builder("cb").longOpt("callbacks").argName("callback.A,callback.B").type(String.class)
+                .hasArg().desc("Callbacks during execution").build());
+
+        opt.addOption(Option.builder("o").longOpt("dot-output").argName("folder").type(String.class)
+                .hasArg().desc("DOT file output directory").build());
+
+        opt.addOption(Option.builder("n").longOpt("machine-name").argName("name").type(String.class)
+                .hasArg().desc("Machine name").build());
 
         return opt;
     }
@@ -80,6 +84,7 @@ public class Main {
                 }
             config.initializerName = (String) result.getParsedOptionValue("Q");
             config.ruleName = (String) result.getParsedOptionValue("R");
+            config.haltPredicateName = (String) result.getParsedOptionValue("H");
             config.customClassPath = (String) result.getParsedOptionValue("cp");
             config.iterationSteps = Integer.valueOf(result.getOptionValue("t", "-1"));
             config.callbackNames = callbacks.size() > 0 ? callbacks.toArray(new String[0]) : new String[0];
@@ -97,21 +102,23 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // args = "-Q examples.ExampleQuiverInitializer -R examples.ExampleRules2 -cb machine.callbacks.SaveDotCallback,machine.callbacks.PrintBlockCallback"
-        //         .split(" ");
+        // args = "-Q compositionmachine.examples.ExampleQuiverInitializer -R compositionmachine.examples.ExampleRules2 -H compositionmachine.machine.predicates.LoopPredicate"
+        // // "-cb compositionmachine.machine.callbacks.SaveDotCallback,compositionmachine.machine.callbacks.PrintBlockCallback"
+        // .split(" ");
         // args = "help".split(" ");
         // args = new String[0];
         Config config = parseArguments(args);
 
-        
+        // String[] callbackNames = new String[1];
+        // callbackNames[0] = "compositionmachine.machine.callbacks.PrintBlockCallback";
         // String[] callbackNames = new String[2];
-        // // callbackNames[0] = "machine.callbacks.PrintBlockCallback";
         // callbackNames[0] = "compositionmachine.machine.callbacks.SaveDotCallback";
         // callbackNames[1] = "compositionmachine.machine.callbacks.PrintBlockCallback";
         // Config config = new Config();
         // config.customClassPath = "./";
         // config.initializerName = "examples.ExampleQuiverInitializer";
         // config.ruleName = "examples.ExampleRules2";
+        // config.haltPredicateName = "compositionmachine.machine.predicates.UnchangePredicate";
         // config.iterationSteps = 5;
         // config.callbackNames = callbackNames;
         // config.dotOutputPath = "data/";
@@ -120,7 +127,7 @@ public class Main {
         CompositionMachine<?> machine = b.boot();
         // CompositionMachine<?> machine = b.creatCompositionMachine();
         // machine.execute(config.iterationSteps);
-         
+
         // for (Entry<Integer, ?> tuple : machine.getQuiverHistory().entrySet()) {
         // System.out.println(tuple.getKey() + ", " + tuple.getValue());
         // }

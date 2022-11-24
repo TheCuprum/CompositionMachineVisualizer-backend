@@ -26,4 +26,10 @@ public class PrintBlockCallback implements MachineCallback {
         System.out.println(newQuiver + "  t=" + step);
     }
 
+    @Override
+    public <CQ extends BaseConnectedQuiver<CQ>> void onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory) {
+        System.out.println(quiverHistory.get(0));
+        System.out.println(quiverHistory.get(step));
+    }
+
 }

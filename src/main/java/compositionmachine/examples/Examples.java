@@ -4,6 +4,7 @@ import compositionmachine.machine.ConnectedQuiver;
 import compositionmachine.machine.Quiver;
 import compositionmachine.machine.QuiverInitializer;
 import compositionmachine.machine.internal.CompositionMachine;
+import compositionmachine.machine.predicates.LoopPredicate;
 
 /**
  * @author Damian Arellanes
@@ -23,7 +24,7 @@ public class Examples {
         // 122 (6), 110 (5), 102, (8), 62 (6), 60 (5)
 
         CompositionMachine<ConnectedQuiver> m = new CompositionMachine<ConnectedQuiver>(
-                getInitialConfiguration(), new ExampleRules2());
+                getInitialConfiguration(), new ExampleRules2(), new LoopPredicate());
         // Machine m = new CompositionMachine(
         // getInitialConfiguration(), new MyRules2()
         // );

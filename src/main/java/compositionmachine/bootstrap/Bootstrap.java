@@ -12,7 +12,9 @@ import compositionmachine.machine.BaseRuleSet;
 import compositionmachine.machine.QuiverInitializer;
 import compositionmachine.machine.callbacks.MachineCallback;
 import compositionmachine.machine.internal.CompositionMachine;
+import compositionmachine.machine.predicates.HaltPredicate;
 import compositionmachine.util.FileUtil;
+
 /**
  * Bootstrap class to create and boot Composition Machines.
  */
@@ -26,16 +28,18 @@ public class Bootstrap {
                 return false;
         }
     };
-    private static final Class<?>[] CM_PARAMETER_TYPES = {QuiverInitializer.class, BaseRuleSet.class};
-    private static final Class<?>[] CALLBACK_PARAMETER_TYPES = {Config.class};
+    private static final Class<?>[] CM_PARAMETER_TYPES = { QuiverInitializer.class, BaseRuleSet.class,
+            HaltPredicate.class };
+    private static final Class<?>[] CALLBACK_PARAMETER_TYPES = { Config.class };
 
     private URLClassLoader customClassLoader;
     private Config bootConfig = null;
 
     /**
      * Create bootstrap instance.
+     * 
      * @param customClassPath Customized directory to load external classes from.
-     * @param config Bootstrap configuration.
+     * @param config          Bootstrap configuration.
      * @return Created bootstrap instance.
      */
     public static Bootstrap createBootstrap(String customClassPath, Config config) {
@@ -46,6 +50,7 @@ public class Bootstrap {
 
     /**
      * Sacn for external class jars.
+     * 
      * @param customClassPath Customized directory to load external classes from.
      * @return All found jars in specified path.
      */
@@ -58,9 +63,13 @@ public class Bootstrap {
         } else {
             File[] filtedFiles = customFile.listFiles(JAR_FILENAME_FILTER);
             ArrayList<URI> uriList = new ArrayList<>();
-            uriList.add(customFile.toURI());
-            for (File file : filtedFiles) {
-                uriList.add(file.toURI());
+            if (filtedFiles != null) {
+                uriList.add(customFile.toURI());
+                for (File file : filtedFiles) {
+                    uriList.add(file.toURI());
+                }
+            }else{
+                System.err.println("Missing custom class path: ".concat(customClassPath));
             }
             return uriList;
         }
@@ -68,6 +77,7 @@ public class Bootstrap {
 
     /**
      * Load external class by its name.
+     * 
      * @param className Fully Qualified Name of target class.
      * @param baseClass Base class the class should inherited.
      * @return Loaded external class.
@@ -87,8 +97,9 @@ public class Bootstrap {
 
     /**
      * Constructor.
+     * 
      * @param customClassPath Customized directory to load external classes from.
-     * @param bootConfig Bootstrap configuration.
+     * @param bootConfig      Bootstrap configuration.
      */
     public Bootstrap(String customClassPath, Config bootConfig) {
         URL[] urls = FileUtil.uri2url(sacnForJar(customClassPath));
@@ -98,6 +109,7 @@ public class Bootstrap {
 
     /**
      * Sets bootstrap config after instance created
+     * 
      * @param config Bootstrap configuration.
      */
     public void setConfig(Config config) {
@@ -106,6 +118,7 @@ public class Bootstrap {
 
     /**
      * Getter for bootstrap config.
+     * 
      * @return Bootstrap configuration instance.
      */
     public Config getConfig() {
@@ -114,11 +127,13 @@ public class Bootstrap {
 
     /**
      * Cteates Composition Machine.
+     * 
      * @return Created Composition Machine instance.
      */
     public CompositionMachine<?> creatCompositionMachine() {
         Class<?> initializerClass = this.loadClass(this.bootConfig.initializerName, QuiverInitializer.class);
         Class<?> ruleClass = this.loadClass(this.bootConfig.ruleName, BaseRuleSet.class);
+        Class<?> haltPredicateClass = this.loadClass(this.bootConfig.haltPredicateName, HaltPredicate.class);
         ArrayList<Class<?>> callbackClassList = new ArrayList<>();
         for (String callbackName : this.bootConfig.callbackNames) {
             Class<?> callbackClass = this.loadClass(callbackName, MachineCallback.class);
@@ -127,26 +142,29 @@ public class Bootstrap {
         }
 
         try {
-            Object initializerObject = 
-                initializerClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
-            Object ruleObject = 
-                ruleClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
+            Object initializerObject = initializerClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
+            Object ruleObject = ruleClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
+            Object haltPredicateObject = haltPredicateClass.getConstructor(new Class<?>[0]).newInstance(new Object[0]);
 
             Object[] callbackObjectList = new Object[callbackClassList.size()];
             for (int i = 0; i < callbackObjectList.length; i++) {
-                callbackObjectList[i] = callbackClassList.get(i).getConstructor(new Class<?>[0]).newInstance(new Object[0]);
-                callbackClassList.get(i).getMethod("initialize", CALLBACK_PARAMETER_TYPES).invoke(callbackObjectList[i], this.bootConfig);
+                callbackObjectList[i] = callbackClassList.get(i).getConstructor(new Class<?>[0])
+                        .newInstance(new Object[0]);
+                callbackClassList.get(i).getMethod("initialize", CALLBACK_PARAMETER_TYPES).invoke(callbackObjectList[i],
+                        this.bootConfig);
             }
 
-            Object[] args = {initializerObject, ruleObject};
-            CompositionMachine<?> machine = (CompositionMachine<?>) CompositionMachine.class.getMethod("createMachine", CM_PARAMETER_TYPES).invoke(null, args);
+            Object[] args = { initializerObject, ruleObject, haltPredicateObject };
+            CompositionMachine<?> machine = (CompositionMachine<?>) CompositionMachine.class
+                    .getMethod("createMachine", CM_PARAMETER_TYPES).invoke(null, args);
             for (Object callbackObject : callbackObjectList) {
-                machine.addCallback((MachineCallback)callbackObject);
+                machine.addCallback((MachineCallback) callbackObject);
             }
             return machine;
             // return CompositionMachine.createMachine(initializerObject, ruleObject);
 
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
@@ -154,6 +172,7 @@ public class Bootstrap {
 
     /**
      * Create and execute Composition Machine in one call.
+     * 
      * @return Executed Composition Machine instance.
      */
     public CompositionMachine<?> boot() {

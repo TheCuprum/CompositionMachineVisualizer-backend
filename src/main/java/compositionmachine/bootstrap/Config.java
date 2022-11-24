@@ -7,6 +7,7 @@ public class Config implements Cloneable {
     public String ruleName = null;
     public String customClassPath = null;
     public int iterationSteps = -1;
+    public String haltPredicateName = null;
     public String[] callbackNames = null;
     public String dotOutputPath = null;
     public String machineName = null;
@@ -16,6 +17,7 @@ public class Config implements Cloneable {
         DEFAULT_CONFIG = new Config();
         DEFAULT_CONFIG.customClassPath = "custom/";
         DEFAULT_CONFIG.iterationSteps = 100;
+        DEFAULT_CONFIG.haltPredicateName = "compositionmachine.machine.predicates.UnchangePredicate";
         DEFAULT_CONFIG.callbackNames = new String[]{"machine.callbacks.PrintBlockCallback"};
         DEFAULT_CONFIG.dotOutputPath = "data/";
         DEFAULT_CONFIG.machineName = "default";
@@ -40,6 +42,7 @@ public class Config implements Cloneable {
     public static Config complete(Config config){
         config.customClassPath = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.customClassPath);
         config.iterationSteps = checkIntPositive(config, DEFAULT_CONFIG, (c) -> c.iterationSteps);
+        config.haltPredicateName = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.haltPredicateName);
         config.callbackNames = (String[]) checkNull(config, DEFAULT_CONFIG, (c) -> c.callbackNames);
         config.dotOutputPath = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.dotOutputPath);
         config.machineName = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.machineName);
@@ -63,6 +66,7 @@ public class Config implements Cloneable {
         sb.append(this.ruleName).append('\n');
         sb.append(this.customClassPath).append('\n');
         sb.append(this.iterationSteps).append('\n');
+        sb.append(this.haltPredicateName).append('\n');
         for(String n : this.callbackNames)
             sb.append(n).append('\n');
         sb.append(this.machineName).append('\n');
