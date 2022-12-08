@@ -4,7 +4,14 @@ import compositionmachine.machine.ConnectedQuiver;
 import compositionmachine.machine.Quiver;
 import compositionmachine.machine.interfaces.QuiverInitializer;
 
-public class ExampleQuiverInitializer implements QuiverInitializer<ConnectedQuiver>{
+/**
+ * Example quiver from the paper.
+ * Reference:
+ * Arellanes, D. (2021). Composition Machines: Programming Self-Organising
+ * Software Models for the Emergence of Sequential Program Spaces. ArXiv
+ * e-prints, arXiv:2108.05401.
+ */
+public class ExampleQuiverInitializer implements QuiverInitializer<ConnectedQuiver> {
     @Override
     public Quiver<ConnectedQuiver> generateQuiver() {
         ConnectedQuiver q1 = new ConnectedQuiver();

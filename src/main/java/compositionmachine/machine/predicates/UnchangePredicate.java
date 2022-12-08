@@ -6,6 +6,9 @@ import compositionmachine.machine.Quiver;
 import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.interfaces.HaltPredicate;
 
+/**
+ * Halts the machine if the machine's state doesn't change.
+ */
 public class UnchangePredicate implements HaltPredicate {
 
     @Override

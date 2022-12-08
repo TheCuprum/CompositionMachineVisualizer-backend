@@ -23,17 +23,48 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
     // private final Quiver<CQ> currentQuiver;
     private final ArrayList<MachineCallback> callbacks;
 
+    /**
+     * Creates Composition Machine by QuiverInitializer, BaseRuleSet and
+     * HaltPredicate.
+     * 
+     * @param <Q>       Target type of connected quiver the machine going to execute
+     *                  on.
+     * @param qInit     A QuiverInitializer instance to generate a new quiver.
+     * @param rules     A set of rules that applicable on target type of connected
+     *                  quiver.
+     * @param predicate A HaltPredicate to check if the machine should halt.
+     * @return A new CompositionMachine instance.
+     */
     public static <Q extends BaseConnectedQuiver<Q>> CompositionMachine<Q> createMachine(QuiverInitializer<Q> qInit,
             BaseRuleSet<Q> rules, HaltPredicate predicate) {
         return createMachine(qInit.generateQuiver(), rules, predicate);
     }
 
+    /**
+     * Creates Composition Machine by Quiver, BaseRuleSet and HaltPredicate.
+     * 
+     * @param <Q>       Target type of connected quiver the machine going to execute
+     *                  on.
+     * @param quiver    A Quiver instance the machine will operate on.
+     * @param rules     A set of rules that applicable on target type of connected
+     *                  quiver.
+     * @param predicate A HaltPredicate to check if the machine should halt.
+     * @return A new CompositionMachine instance.
+     */
     public static <Q extends BaseConnectedQuiver<Q>> CompositionMachine<Q> createMachine(Quiver<Q> quiver,
             BaseRuleSet<Q> rules, HaltPredicate predicate) {
         // LogUtil.printQuiverContent(quiver);
         return new CompositionMachine<Q>(quiver, rules, predicate);
     }
 
+    /**
+     * Creates Composition Machine by Quiver, BaseRuleSet and HaltPredicate.
+     * 
+     * @param cq        A Quiver instance the machine will operate on.
+     * @param rules     A set of rules that applicable on target type of connected
+     *                  quiver.
+     * @param predicate A HaltPredicate to check if the machine should halt.
+     */
     public CompositionMachine(Quiver<CQ> cq, BaseRuleSet<CQ> rules, HaltPredicate predicate) {
         this.rules = rules;
         this.quiverHistory = new LinkedHashMap<>();
@@ -43,16 +74,37 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
         this.callbacks = new ArrayList<>();
     }
 
+    /**
+     * Gets complete history of the execution of the machine.
+     * 
+     * @return An instance of Map<Integer, Quiver<CQ>> which maps each step number
+     *         to coresponding quiver.
+     */
     public Map<Integer, Quiver<CQ>> getQuiverHistory() {
         return this.quiverHistory;
     }
 
+    /**
+     * Adds a callback to the machine.
+     * 
+     * @param callback A callback instance which implements MachineCallback
+     *                 interface.
+     * @see compositionmachine.machine.interfaces.MachineCallback
+     */
     public void addCallback(MachineCallback callback) {
         if (callback != null)
             this.callbacks.add(callback);
     }
 
-    // [] if halts
+    /**
+     * Execute the machine from start to {@code untilTime} steps.
+     * 
+     * @param untilTime Step count to be exected.
+     * @return An array of length 0 if the machine dosen't halt, otherwise return an
+     *         array of objects containing halt step and return values from
+     *         callbacks.
+     * @see compositionmachine.machine.interfaces.MachineCallback
+     */
     public Object[] execute(int untilTime) {
         for (MachineCallback cb : this.callbacks)
             cb.onExecuteStart(untilTime, this.quiverHistory.get(0));

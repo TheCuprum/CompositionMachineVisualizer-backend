@@ -2,6 +2,9 @@ package compositionmachine.machine;
 
 import com.google.common.collect.HashBasedTable;
 
+/**
+ * Represents the organisms (or edges) in quivers.
+ */
 public class Arrow {
     private static final HashBasedTable<Integer, Integer, Arrow> arrowCache = HashBasedTable.create();
 
@@ -9,8 +12,14 @@ public class Arrow {
     private final int target;
     private final int cachedHashCode;
 
-    // usually target > source
+    /**
+     * Create new arrow instance by its source and target index.
+     * 
+     * @param sourceIndex Arrow's source node index.
+     * @param targetIndex Arrow's target node index.
+     */
     private Arrow(int sourceIndex, int targetIndex) {
+        // usually target > source
         this.source = sourceIndex;
         this.target = targetIndex;
         StringBuilder builder = new StringBuilder();
@@ -18,10 +27,20 @@ public class Arrow {
         this.cachedHashCode = builder.toString().hashCode();
     }
 
+    /**
+     * Gets arrow's source node index.
+     * 
+     * @return Arrow's source node index.
+     */
     public int getSourceIndex() {
         return this.source;
     }
 
+    /**
+     * Gets arrow's target node index.
+     * 
+     * @return Arrow's target node index.
+     */
     public int getTargetIndex() {
         return this.target;
     }
@@ -48,13 +67,21 @@ public class Arrow {
         return builder.toString();
     }
 
-    public static Arrow create(int sourceIndex, int targetIndex){
+    /**
+     * Create arrow or reuse existing one in cache according to its source and
+     * target index, to avoid duplicated small objects.
+     * 
+     * @param sourceIndex Arrow's source node index.
+     * @param targetIndex Arrow's target node index.
+     * @return Created arrow.
+     */
+    public static Arrow create(int sourceIndex, int targetIndex) {
         Arrow a = arrowCache.get(sourceIndex, targetIndex);
-        if (a == null){
+        if (a == null) {
             a = new Arrow(sourceIndex, targetIndex);
             arrowCache.put(sourceIndex, targetIndex, a);
             return a;
-        }else{
+        } else {
             return a;
         }
     }

@@ -2,16 +2,19 @@ package compositionmachine.machine;
 
 import com.google.common.collect.HashBasedTable;
 
+/**
+ * Dot node class which containing its ordinal and group.
+ */
 public class DotNode {
     private static final HashBasedTable<Integer, Integer, DotNode> nodeCache = HashBasedTable.create();
-    
+
     private final int value;
     private final int group;
 
     private final int hash;
     private final String hashString;
 
-    private DotNode(int val, int g){
+    private DotNode(int val, int g) {
         this.value = val;
         this.group = g;
 
@@ -21,22 +24,40 @@ public class DotNode {
         this.hash = this.hashString.hashCode();
     }
 
-    public static DotNode create(int value, int group){
+    /**
+     * Create node or reuse existing one in cache according to its value and
+     * group, to avoid duplicated small objects.
+     * 
+     * @param value Node ordinal.
+     * @param group Node group.
+     * @return Created node.
+     */
+    public static DotNode create(int value, int group) {
         DotNode node = nodeCache.get(value, group);
-        if (node == null){
+        if (node == null) {
             node = new DotNode(value, group);
             nodeCache.put(value, group, node);
             return node;
-        }else{
+        } else {
             return node;
         }
     }
 
-    public int getValue(){
+    /**
+     * Gets node's ordinal.
+     * 
+     * @return Node's ordinal.
+     */
+    public int getValue() {
         return this.value;
     }
 
-    public int getGroup(){
+    /**
+     * Gets node's group.
+     * 
+     * @return Node's group.
+     */
+    public int getGroup() {
         return this.group;
     }
 
@@ -54,7 +75,7 @@ public class DotNode {
     public String toString() {
         return hashString;
     }
-    
+
     @Override
     public int hashCode() {
         return this.hash;

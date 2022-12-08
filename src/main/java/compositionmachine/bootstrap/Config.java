@@ -18,28 +18,48 @@ public class Config implements Cloneable {
         DEFAULT_CONFIG.customClassPath = "custom/";
         DEFAULT_CONFIG.iterationSteps = 100;
         DEFAULT_CONFIG.haltPredicateName = "compositionmachine.machine.predicates.UnchangePredicate";
-        DEFAULT_CONFIG.callbackNames = new String[]{"machine.callbacks.PrintBlockCallback"};
+        DEFAULT_CONFIG.callbackNames = new String[] { "machine.callbacks.PrintBlockCallback" };
         DEFAULT_CONFIG.dotOutputPath = "data/";
         DEFAULT_CONFIG.machineName = "default";
     }
 
-    private static Object checkNull(Config config, Config defaultConfig, Function<Config, Object> accessFunction){
+    /**
+     * Checks if one config field (by access function) is null, then returns default
+     * value or exist value.
+     * 
+     * @param config         Config instance to be checked.
+     * @param defaultConfig  Default config instance.
+     * @param accessFunction Function to access specific config field.
+     * @return A not null config field value.
+     */
+    private static Object checkNull(Config config, Config defaultConfig, Function<Config, Object> accessFunction) {
         Object o = accessFunction.apply(config);
         Object od = accessFunction.apply(defaultConfig);
         return o != null ? o : od;
     }
-    
-    private static int checkIntPositive(Config config, Config defaultConfig, Function<Config, Integer> accessFunction){
+
+    private static int checkIntPositive(Config config, Config defaultConfig, Function<Config, Integer> accessFunction) {
         int num = accessFunction.apply(config);
         int defaultNum = accessFunction.apply(defaultConfig);
         return num > 0 ? num : defaultNum;
     }
 
+    /**
+     * Gets default config.
+     * 
+     * @return Default cinfig instance.
+     */
     public static Config getDefault() {// configure or default
         return DEFAULT_CONFIG;
     }
 
-    public static Config complete(Config config){
+    /**
+     * Completes missing config fields.
+     * 
+     * @param config Config instance.
+     * @return Reference to complete config.
+     */
+    public static Config complete(Config config) {
         config.customClassPath = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.customClassPath);
         config.iterationSteps = checkIntPositive(config, DEFAULT_CONFIG, (c) -> c.iterationSteps);
         config.haltPredicateName = (String) checkNull(config, DEFAULT_CONFIG, (c) -> c.haltPredicateName);
@@ -67,7 +87,7 @@ public class Config implements Cloneable {
         sb.append(this.customClassPath).append('\n');
         sb.append(this.iterationSteps).append('\n');
         sb.append(this.haltPredicateName).append('\n');
-        for(String n : this.callbackNames)
+        for (String n : this.callbackNames)
             sb.append(n).append('\n');
         sb.append(this.machineName).append('\n');
         return sb.toString();

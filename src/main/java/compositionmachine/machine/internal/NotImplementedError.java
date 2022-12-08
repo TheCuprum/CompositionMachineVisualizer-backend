@@ -1,5 +1,8 @@
 package compositionmachine.machine.internal;
 
-public class NotImplementedError extends Error{
-    
+/**
+ * Throwed when some method is not implemented.
+ */
+public class NotImplementedError extends Error {
+
 }

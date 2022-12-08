@@ -6,6 +6,9 @@ import compositionmachine.machine.Quiver;
 import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.interfaces.HaltPredicate;
 
+/**
+ * Halts the machine if the machine runs into a "loop" state.
+ */
 public class LoopPredicate implements HaltPredicate {
     @Override
     public <CQ extends BaseConnectedQuiver<CQ>> boolean testHalt(int step,

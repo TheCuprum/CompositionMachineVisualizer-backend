@@ -7,6 +7,11 @@ import compositionmachine.machine.Quiver;
 import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.interfaces.MachineCallback;
 
+/**
+ * A callback class that prints quiver's state in standard output.
+ * 
+ * @see compositionmachine.machine.interfaces.MachineCallback
+ */
 public class PrintBlockCallback implements MachineCallback {
     @Override
     public void initialize(Config config) {
@@ -33,7 +38,7 @@ public class PrintBlockCallback implements MachineCallback {
 
         System.out.println(quiverHistory.get(0) + "  t=" + 0);
         System.out.println(quiverHistory.get(step) + "  t=" + step);
-        
+
         return null;
     }
 

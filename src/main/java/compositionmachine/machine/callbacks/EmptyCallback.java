@@ -7,6 +7,11 @@ import compositionmachine.machine.Quiver;
 import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.interfaces.MachineCallback;
 
+/**
+ * A callback class that does nothing.
+ * 
+ * @see compositionmachine.machine.interfaces.MachineCallback
+ */
 public class EmptyCallback implements MachineCallback {
 
     @Override

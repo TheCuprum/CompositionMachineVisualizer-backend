@@ -9,6 +9,11 @@ import compositionmachine.machine.interfaces.MachineCallback;
 import compositionmachine.util.DotWriter;
 import compositionmachine.util.Util;
 
+/**
+ * A callback class that saves quiver in each step to a DOT file.
+ * 
+ * @see compositionmachine.machine.interfaces.MachineCallback
+ */
 public class SaveDotCallback implements MachineCallback {
 
     DotWriter writer;

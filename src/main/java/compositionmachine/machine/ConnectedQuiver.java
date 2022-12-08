@@ -9,6 +9,7 @@ import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.internal.NotImplementedError;
 
 /**
+ * 1-dimensional connected quiver.
  * @author Damian Arellanes
  *         {@link https://github.com/damianarellanes/compositionmachine}
  */
@@ -17,6 +18,10 @@ public class ConnectedQuiver extends BaseConnectedQuiver<ConnectedQuiver> /* ext
     private ArrayList<Integer> arrowStateOverride = new ArrayList<>();
     private ArrayList<ArrayList<Arrow>> arrowCache = new ArrayList<>();
 
+    /**
+     * Appends an arrow with initial state 0 or 1.
+     * @param state The inital state of the arrow.
+     */
     public void addArrow(int state) {
         this.arrowStateOverride.add(state);
         ArrayList<Arrow> cache = new ArrayList<>();
