@@ -1,4 +1,4 @@
-package compositionmachine.machine;
+package compositionmachine.machine.interfaces;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import compositionmachine.machine.internal.Arrow;
+import compositionmachine.machine.Arrow;
 
 public abstract class BaseConnectedQuiver<Sub extends BaseConnectedQuiver<Sub>> implements Cloneable{
     protected LinkedHashMap<Arrow, Integer> arrowState = new LinkedHashMap<>();

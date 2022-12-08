@@ -1,8 +1,11 @@
-package compositionmachine.machine;
+package compositionmachine.machine.interfaces;
+
+
 
 import java.util.ArrayList;
 
-import compositionmachine.machine.internal.Arrow;
+import compositionmachine.machine.Arrow;
+import compositionmachine.machine.ConnectedQuiver;
 
 public abstract class RuleSet implements BaseRuleSet<ConnectedQuiver> {
 
@@ -29,11 +32,11 @@ public abstract class RuleSet implements BaseRuleSet<ConnectedQuiver> {
         }
     }
 
-    public abstract int delta1(int organismState);
+    public abstract int delta1(int organism);
 
-    public abstract int delta2(int organismState, int neighbourRight);
+    public abstract int delta2(int organism, int neighbourRight);
 
-    public abstract int delta3(int neighbourLeft, int organismState);
+    public abstract int delta3(int neighbourLeft, int organism);
 
-    public abstract int delta4(int neighbourLeft, int organismState, int neighbourRight);
+    public abstract int delta4(int neighbourLeft, int organism, int neighbourRight);
 }

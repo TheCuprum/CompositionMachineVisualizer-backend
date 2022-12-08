@@ -1,9 +1,9 @@
 package compositionmachine.examples;
 
+import compositionmachine.machine.CompositionMachine;
 import compositionmachine.machine.ConnectedQuiver;
 import compositionmachine.machine.Quiver;
-import compositionmachine.machine.QuiverInitializer;
-import compositionmachine.machine.internal.CompositionMachine;
+import compositionmachine.machine.interfaces.QuiverInitializer;
 import compositionmachine.machine.predicates.LoopPredicate;
 
 /**

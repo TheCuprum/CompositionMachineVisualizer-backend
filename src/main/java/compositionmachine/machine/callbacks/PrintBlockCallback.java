@@ -3,8 +3,9 @@ package compositionmachine.machine.callbacks;
 import java.util.Map;
 
 import compositionmachine.bootstrap.Config;
-import compositionmachine.machine.BaseConnectedQuiver;
 import compositionmachine.machine.Quiver;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
+import compositionmachine.machine.interfaces.MachineCallback;
 
 public class PrintBlockCallback implements MachineCallback {
     @Override
@@ -27,9 +28,13 @@ public class PrintBlockCallback implements MachineCallback {
     }
 
     @Override
-    public <CQ extends BaseConnectedQuiver<CQ>> void onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory) {
-        System.out.println(quiverHistory.get(0));
-        System.out.println(quiverHistory.get(step));
+    public <CQ extends BaseConnectedQuiver<CQ>> Object onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory) {
+        System.out.println("HALTS AT TIME " + step + "!");
+
+        System.out.println(quiverHistory.get(0) + "  t=" + 0);
+        System.out.println(quiverHistory.get(step) + "  t=" + step);
+        
+        return null;
     }
 
 }

@@ -12,7 +12,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import compositionmachine.machine.internal.CompositionMachine;
+import compositionmachine.machine.CompositionMachine;
 
 public class Main {
     private static Options OPTIONS = createCommandOptions();

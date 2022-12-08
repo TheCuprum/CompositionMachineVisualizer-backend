@@ -2,9 +2,9 @@ package compositionmachine.util;
 
 import java.util.Set;
 
-import compositionmachine.machine.BaseConnectedQuiver;
+import compositionmachine.machine.Arrow;
 import compositionmachine.machine.Quiver;
-import compositionmachine.machine.internal.Arrow;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 
 public class LogUtil {
     public static <CQ extends BaseConnectedQuiver<CQ>> void printQuiverContent(Quiver<CQ> q){

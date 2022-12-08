@@ -3,8 +3,9 @@ package compositionmachine.machine.callbacks;
 import java.util.Map;
 
 import compositionmachine.bootstrap.Config;
-import compositionmachine.machine.BaseConnectedQuiver;
 import compositionmachine.machine.Quiver;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
+import compositionmachine.machine.interfaces.MachineCallback;
 import compositionmachine.util.DotWriter;
 import compositionmachine.util.Util;
 
@@ -38,7 +39,7 @@ public class SaveDotCallback implements MachineCallback {
     }
 
     @Override
-    public <CQ extends BaseConnectedQuiver<CQ>> void onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory) {
-        
+    public <CQ extends BaseConnectedQuiver<CQ>> Object onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory) {
+        return null;
     }
 }

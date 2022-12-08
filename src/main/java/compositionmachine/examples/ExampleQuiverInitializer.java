@@ -2,7 +2,7 @@ package compositionmachine.examples;
 
 import compositionmachine.machine.ConnectedQuiver;
 import compositionmachine.machine.Quiver;
-import compositionmachine.machine.QuiverInitializer;
+import compositionmachine.machine.interfaces.QuiverInitializer;
 
 public class ExampleQuiverInitializer implements QuiverInitializer<ConnectedQuiver>{
     @Override

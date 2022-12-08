@@ -8,11 +8,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 
-import compositionmachine.machine.BaseRuleSet;
-import compositionmachine.machine.QuiverInitializer;
-import compositionmachine.machine.callbacks.MachineCallback;
-import compositionmachine.machine.internal.CompositionMachine;
-import compositionmachine.machine.predicates.HaltPredicate;
+import compositionmachine.machine.CompositionMachine;
+import compositionmachine.machine.interfaces.BaseRuleSet;
+import compositionmachine.machine.interfaces.HaltPredicate;
+import compositionmachine.machine.interfaces.MachineCallback;
+import compositionmachine.machine.interfaces.QuiverInitializer;
 import compositionmachine.util.FileUtil;
 
 /**

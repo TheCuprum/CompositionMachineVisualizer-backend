@@ -12,11 +12,11 @@ import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
 
-import compositionmachine.machine.BaseConnectedQuiver;
+import compositionmachine.machine.Arrow;
+import compositionmachine.machine.DotEdge;
+import compositionmachine.machine.DotNode;
 import compositionmachine.machine.Quiver;
-import compositionmachine.machine.internal.Arrow;
-import compositionmachine.machine.internal.DotEdge;
-import compositionmachine.machine.internal.DotNode;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 
 public class DotWriter {
     private static final String DEFAULT_NAME = "default";

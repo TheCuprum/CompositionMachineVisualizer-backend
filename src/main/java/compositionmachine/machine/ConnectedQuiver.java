@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import compositionmachine.machine.internal.Arrow;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
 import compositionmachine.machine.internal.NotImplementedError;
 
 /**

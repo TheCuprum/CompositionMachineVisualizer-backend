@@ -1,4 +1,4 @@
-package compositionmachine.machine.internal;
+package compositionmachine.machine;
 
 import org.jgrapht.graph.DefaultEdge;
 

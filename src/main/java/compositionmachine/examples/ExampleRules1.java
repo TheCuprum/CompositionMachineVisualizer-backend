@@ -1,6 +1,6 @@
 package compositionmachine.examples;
 
-import compositionmachine.machine.RuleSet;
+import compositionmachine.machine.interfaces.RuleSet;
 
 /**
  * @author Damian Arellanes

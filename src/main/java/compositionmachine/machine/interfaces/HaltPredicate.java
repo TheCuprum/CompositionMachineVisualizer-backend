@@ -1,8 +1,9 @@
-package compositionmachine.machine.predicates;
+package compositionmachine.machine.interfaces;
+
+
 
 import java.util.LinkedHashMap;
 
-import compositionmachine.machine.BaseConnectedQuiver;
 import compositionmachine.machine.Quiver;
 
 /**

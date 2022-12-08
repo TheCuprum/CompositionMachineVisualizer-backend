@@ -1,16 +1,15 @@
-package compositionmachine.machine.internal;
+package compositionmachine.machine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import compositionmachine.machine.BaseConnectedQuiver;
-import compositionmachine.machine.BaseRuleSet;
-import compositionmachine.machine.Quiver;
-import compositionmachine.machine.QuiverInitializer;
-import compositionmachine.machine.callbacks.MachineCallback;
-import compositionmachine.machine.predicates.HaltPredicate;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
+import compositionmachine.machine.interfaces.BaseRuleSet;
+import compositionmachine.machine.interfaces.HaltPredicate;
+import compositionmachine.machine.interfaces.MachineCallback;
+import compositionmachine.machine.interfaces.QuiverInitializer;
 
 /**
  * @author Damian Arellanes
@@ -53,7 +52,8 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
             this.callbacks.add(callback);
     }
 
-    public void execute(int untilTime) {
+    // [] if halts
+    public Object[] execute(int untilTime) {
         for (MachineCallback cb : this.callbacks)
             cb.onExecuteStart(untilTime, this.quiverHistory.get(0));
 
@@ -66,15 +66,17 @@ public class CompositionMachine<CQ extends BaseConnectedQuiver<CQ>> {
             this.quiverHistory.put(i, newQuiver);
 
             if (this.haltPredicate.testHalt(i, this.quiverHistory)) { // halt check
-                System.out.println("HALTS AT TIME " + i + "!");
+                ArrayList<Object> haltResult = new ArrayList<>(this.callbacks.size() + 1);
+                haltResult.add(i); // halt step
                 for (MachineCallback cb : this.callbacks)
-                    cb.onHalt(i, this.quiverHistory);
-                return;
+                    haltResult.add(cb.onHalt(i, this.quiverHistory));
+                return haltResult.toArray();
             }
 
             for (MachineCallback cb : this.callbacks)
                 cb.onStepEnd(i, this.quiverHistory.get(i), this.quiverHistory);
         }
+        return new Object[0];
     }
 
     // return value is next state

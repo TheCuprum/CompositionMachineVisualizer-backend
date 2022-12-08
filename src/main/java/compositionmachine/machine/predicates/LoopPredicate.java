@@ -2,8 +2,9 @@ package compositionmachine.machine.predicates;
 
 import java.util.LinkedHashMap;
 
-import compositionmachine.machine.BaseConnectedQuiver;
 import compositionmachine.machine.Quiver;
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
+import compositionmachine.machine.interfaces.HaltPredicate;
 
 public class LoopPredicate implements HaltPredicate {
     @Override

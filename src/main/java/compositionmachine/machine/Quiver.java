@@ -2,6 +2,8 @@ package compositionmachine.machine;
 
 import java.util.ArrayList;
 
+import compositionmachine.machine.interfaces.BaseConnectedQuiver;
+
 /**
  * @author Damian Arellanes
  *         {@link https://github.com/damianarellanes/compositionmachine}

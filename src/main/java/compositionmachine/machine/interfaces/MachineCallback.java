@@ -1,9 +1,8 @@
-package compositionmachine.machine.callbacks;
+package compositionmachine.machine.interfaces;
 
 import java.util.Map;
 
 import compositionmachine.bootstrap.Config;
-import compositionmachine.machine.BaseConnectedQuiver;
 import compositionmachine.machine.Quiver;
 
 public interface MachineCallback {   
@@ -15,5 +14,5 @@ public interface MachineCallback {
     
     public <CQ extends BaseConnectedQuiver<CQ>> void onStepEnd(int step, Quiver<CQ> newQuiver, Map<Integer, Quiver<CQ>> quiverHistory);
 
-    public <CQ extends BaseConnectedQuiver<CQ>> void onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory);
+    public <CQ extends BaseConnectedQuiver<CQ>> Object onHalt(int step, Map<Integer, Quiver<CQ>> quiverHistory);
 }
