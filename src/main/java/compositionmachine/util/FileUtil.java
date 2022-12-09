@@ -42,4 +42,13 @@ public class FileUtil {
         }
         return null;
     }
+
+    public static String getFileExtension(File file) {
+        String fileName = file.getName();
+        int extensionIndex = fileName.lastIndexOf(".");
+        if (extensionIndex > 0)
+            return fileName.substring(extensionIndex + 1);
+        else
+            return null;
+    }
 }
