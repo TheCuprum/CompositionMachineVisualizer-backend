@@ -41,7 +41,7 @@ public class Main {
             httpServer.createContext("/client", webClientHandler);
             httpServer.start();
 
-            // browserVisit("http://localhost:8081/client/index.html");
+            browserVisit("http://localhost:8081/client/index.html");
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 System.out.println("Shutting down...");

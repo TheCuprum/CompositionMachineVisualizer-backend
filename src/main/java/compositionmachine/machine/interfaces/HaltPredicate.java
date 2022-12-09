@@ -12,6 +12,15 @@ import compositionmachine.machine.Quiver;
  * @see compositionmachine.machine.CompositionMachine#execute(int)
  */
 public interface HaltPredicate {
+    /**
+     * Judges whether the Composition Machine should be halt.
+     * 
+     * @param <CQ>          Type of quiver.
+     * @param step          Current execution step.
+     * @param quiverHistory Complete execution history.
+     * @return True if the machine should halt, false if the machine should continue
+     *         running.
+     */
     public <CQ extends BaseConnectedQuiver<CQ>> boolean testHalt(int step,
             LinkedHashMap<Integer, Quiver<CQ>> quiverHistory);
 }

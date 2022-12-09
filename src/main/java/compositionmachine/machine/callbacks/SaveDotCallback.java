@@ -17,7 +17,7 @@ import compositionmachine.util.Util;
 public class SaveDotCallback implements MachineCallback {
 
     DotWriter writer;
-    int suffixLength = 0;
+    int suffixLength = 1;
 
     @Override
     public void initialize(Config config) {
@@ -30,7 +30,7 @@ public class SaveDotCallback implements MachineCallback {
             this.suffixLength++;
             totalSteps /= 10;
         }
-        this.writer.writeDotFile(initialQuiver, Util.leftPadString("0.dot", this.suffixLength, '0'));
+        this.writer.writeDotFile(initialQuiver, Util.leftPadString("0.dot", this.suffixLength + 4, '0'));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SaveDotCallback implements MachineCallback {
     @Override
     public <CQ extends BaseConnectedQuiver<CQ>> void onStepEnd(int step, Quiver<CQ> newQuiver,
             Map<Integer, Quiver<CQ>> quiverHistory) {
-        this.writer.writeDotFile(newQuiver, Util.leftPadString(step + ".dot", this.suffixLength, '0'));
+        this.writer.writeDotFile(newQuiver, Util.leftPadString(step + ".dot", this.suffixLength + 4, '0'));
     }
 
     @Override
