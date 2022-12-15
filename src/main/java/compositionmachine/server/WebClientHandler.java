@@ -3,9 +3,12 @@ package compositionmachine.server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +20,7 @@ import compositionmachine.util.FileUtil;
 
 public class WebClientHandler extends ThreadedHttpHandler {
 
-    private static final String CLIENT_RESOURCE_PATH = "webclient";
+    private static final String CLIENT_RESOURCE_PATH = "/webclient";
     private static HashMap<String, byte[]> resourceCache = new HashMap<>();
 
     public WebClientHandler(boolean multiThreaded) {
@@ -52,15 +55,21 @@ public class WebClientHandler extends ThreadedHttpHandler {
         String contextPath = exchange.getHttpContext().getPath();
         URI requestUri = exchange.getRequestURI();
         String requestPath = requestUri.getPath();
+
         String resourcePath = requestPath.replaceFirst(contextPath, CLIENT_RESOURCE_PATH);
 
-        File requestedFile = new File(resourcePath);
+        InputStream fileStream = this.getClass().getResourceAsStream(resourcePath);
 
-        byte[] contentBytes = getFileBytes(requestedFile);
-        if (contentBytes != null) {
+        System.out.println(contextPath);
+        System.out.println(requestPath);
+        System.out.println(resourcePath);
+        System.out.println(this.getClass().getResource(resourcePath));
+
+        if (fileStream != null) {
+            byte[] contentBytes = fileStream.readAllBytes();
             Headers responseHeaders = exchange.getResponseHeaders();
             
-            ContentType type = ContentType.getTypeByExtension(FileUtil.getFileExtension(requestedFile));
+            ContentType type = ContentType.getTypeByExtension(FileUtil.getFileExtension(resourcePath));
             if (type.mainType.equals("text")) {
                 String tstr = type.toString().concat(";charset=utf-8");
                 responseHeaders.set("Content-Type", tstr);

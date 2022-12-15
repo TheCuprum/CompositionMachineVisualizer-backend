@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -42,9 +43,12 @@ public class FileUtil {
         }
         return null;
     }
+    public static String getFileExtension(String filePath) {
+        return getFileExtension(Path.of(filePath));
+    }
 
-    public static String getFileExtension(File file) {
-        String fileName = file.getName();
+    public static String getFileExtension(Path filePath) {
+        String fileName = filePath.getFileName().toString();
         int extensionIndex = fileName.lastIndexOf(".");
         if (extensionIndex > 0)
             return fileName.substring(extensionIndex + 1);
