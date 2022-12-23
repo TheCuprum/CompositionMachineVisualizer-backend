@@ -60,10 +60,10 @@ public class WebClientHandler extends ThreadedHttpHandler {
 
         InputStream fileStream = this.getClass().getResourceAsStream(resourcePath);
 
-        System.out.println(contextPath);
+        // System.out.println(contextPath);
         System.out.println(requestPath);
-        System.out.println(resourcePath);
-        System.out.println(this.getClass().getResource(resourcePath));
+        // System.out.println(resourcePath);
+        // System.out.println(this.getClass().getResource(resourcePath));
 
         if (fileStream != null) {
             byte[] contentBytes = fileStream.readAllBytes();
