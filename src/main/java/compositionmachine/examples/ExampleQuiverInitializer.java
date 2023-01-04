@@ -36,5 +36,10 @@ public class ExampleQuiverInitializer implements QuiverInitializer<ConnectedQuiv
         q.add(q3);
 
         return q;
+    }
+
+    @Override
+    public boolean iterate() {
+        return false;
     };
 }

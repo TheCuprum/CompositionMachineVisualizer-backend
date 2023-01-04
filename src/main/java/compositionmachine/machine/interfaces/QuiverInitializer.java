@@ -8,4 +8,10 @@ import compositionmachine.machine.Quiver;
  */
 public interface QuiverInitializer<CQ extends BaseConnectedQuiver<CQ>> {
     public Quiver<CQ> generateQuiver();
+
+    /**
+     * Iterates the initializer one step.
+     * @return Whether the iteration is successful.
+     */
+    public boolean iterate();
 }
