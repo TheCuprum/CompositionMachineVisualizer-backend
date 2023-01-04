@@ -41,5 +41,10 @@ public class ExampleQuiverInitializer implements QuiverInitializer<ConnectedQuiv
     @Override
     public boolean iterate() {
         return false;
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
     };
 }

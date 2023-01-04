@@ -14,4 +14,10 @@ public interface QuiverInitializer<CQ extends BaseConnectedQuiver<CQ>> {
      * @return Whether the iteration is successful.
      */
     public boolean iterate();
+
+    /**
+     * Gets quiver initializer's name.
+     * @return Name of initializer.
+     */
+    public String getName();
 }
